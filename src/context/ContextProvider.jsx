@@ -22,6 +22,26 @@ const ContextProvider = ({ children }) => {
     }, 70 * index);
   };
 
+  // Refactors the text by making specific parts bold and replacing asterisks with line breaks.
+  const formatResponseText = response => {
+    // Make text bold between '**' and replace '*' with '</br>'
+    const boldFormatted = response
+      .split('**')
+      .map((text, index) => (index % 2 === 1 ? `<b>${text}</b>` : text))
+      .join('');
+    return boldFormatted.split('*').join('</br>');
+  };
+
+  // Delays the display of each word in the paragraph for animation effect.
+  // This might need to be adjusted or reimplemented based on your exact UI requirements.
+  const displayResponseWithDelay = formattedResponse => {
+    const words = formattedResponse.split(' ');
+    words.forEach((word, index) => {
+      // Assuming paragraphDelay is a function that handles the display with delay
+      paragraphDelay(index, `${word} `);
+    });
+  };
+
   // 사용자가 입력을 제출했을 때 실행되는 함수
   const submit = async prompt => {
     try {
@@ -31,7 +51,7 @@ const ContextProvider = ({ children }) => {
 
       // 입력 또는 프롬프트가 있을 경우, 최근 프롬프트 업데이트
       if (input || prompt) {
-        setRecentPrompts(prev => [...prev, input || prompt]);
+        setRecentPrompts(input || prompt);
         setPrevPrompts(prev => [...prev, input || prompt]);
       }
 
